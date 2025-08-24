@@ -288,4 +288,4 @@ echo "批量發送完成 - 成功: {$successCount}, 失敗: {$failureCount}, 總
 
 ***
 
-©️ 2024 [邱敬幃 Pardn Chiu](https://pardn.io)
+©️ 2025 [邱敬幃 Pardn Chiu](https://pardn.io)

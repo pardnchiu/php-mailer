@@ -1,7 +1,7 @@
 # PHP Mailer
 
-> Lightweight PHP email sending client with SMTP support, automatic configuration management, and complete email functionality.<br>
-> Built on PHPMailer, providing stable and reliable email sending experience.
+> Lightweight PHP mail client with SMTP support, automatic configuration management, and complete email functionality.<br>
+> Built on PHPMailer, providing stable and reliable email delivery experience.
 
 [![packagist](https://img.shields.io/packagist/v/pardnchiu/mailer)](https://packagist.org/packages/pardnchiu/mailer)
 [![version](https://img.shields.io/github/v/tag/pardnchiu/php-mailer?label=release)](https://github.com/pardnchiu/php-mailer/releases)
@@ -16,7 +16,7 @@
 - [Features](#features)
 - [Usage](#usage)
   - [Installation](#installation)
-  - [Environment Variables](#environment-variables)
+  - [Environment Variables Setup](#environment-variables-setup)
   - [Basic Usage](#basic-usage)
 - [API Reference](#api-reference)
   - [Basic Sending](#basic-sending)
@@ -31,7 +31,7 @@
 Automatically configure connection parameters based on environment variables, supporting multiple SMTP services
 
 ### Bulk Sending Support
-Support bulk email sending functionality, suitable for system notifications and large volume sending needs
+Support bulk email sending functionality, suitable for system notifications and high-volume sending needs
 
 ### Stable Connection
 Built-in error handling and automatic cleanup mechanisms to ensure reliable email delivery
@@ -42,9 +42,9 @@ Built-in error handling and automatic cleanup mechanisms to ensure reliable emai
 - **SMTP Support**: Support for multiple SMTP services with automatic encryption configuration
 - **HTML/Plain Text**: Support for both HTML and plain text email formats
 - **Multiple Recipients**: Support for multiple recipients, CC, and BCC
-- **Priority Settings**: Support for high, medium, and low priority email sending
-- **Bulk Sending**: Built-in bulk sending functionality to improve sending efficiency
-- **Auto Cleanup**: Automatic recipient list cleanup after sending
+- **Priority Settings**: Support for high, normal, and low priority email sending
+- **Bulk Sending**: Built-in bulk sending functionality for improved sending efficiency
+- **Automatic Cleanup**: Automatic cleanup of recipient lists after sending
 
 ## Usage
 
@@ -54,28 +54,52 @@ Built-in error handling and automatic cleanup mechanisms to ensure reliable emai
 composer require pardnchiu/mailer
 ```
 
-### Environment Variables
+### Environment Variables Setup
 
 ```env
 MAIL_SERVICE=smtp.gmail.com          # SMTP server
 MAIL_SERVICE_USER=your@email.com     # Sender account
-MAIL_SERVICE_PASSWORD=your_password  # Sender password or app password
+MAIL_SERVICE_PASSWORD=your_password  # Password or app password
 MAIL_SERVICE_PORT=587                # SMTP port (465/587/25)
 MAIL_SERVICE_CHARSET=UTF-8           # Character encoding
 ```
 
 ### Basic Usage
 
+**Method 1: Static Call (Recommended)**
+
 ```php
 <?php
 
 use pardnchiu\Mailer;
 
-// Initialize email client
+// Direct static call
+$result = Mailer::send([
+  "email"     => "recipient@example.com",
+  "subject"   => "Test Email",
+  "body"      => "<h1>This is a test email</h1>",
+  "isHtml"    => true
+]);
+
+if ($result) {
+  echo "Email sent successfully";
+} else {
+  echo "Email sending failed";
+}
+```
+
+**Method 2: Instance Call**
+
+```php
+<?php
+
+use pardnchiu\Mailer;
+
+// Initialize mail client
 $mailer = new Mailer();
 
-// Basic email sending
-$result = $mailer->send([
+// Basic email sending (calling static method through instance)
+$result = $mailer::send([
   "email"     => "recipient@example.com",
   "subject"   => "Test Email",
   "body"      => "<h1>This is a test email</h1>",
@@ -93,10 +117,10 @@ if ($result) {
 
 ### Basic Sending
 
-**send($config)** - Send single email
+**Mailer::send($config)** - Send single email (static call)
 
 ```php
-$config = [
+$result = Mailer::send([
   "email"     => "recipient@example.com",          // Recipient (required)
   "subject"   => "Email Subject",                  // Subject (required)
   "body"      => "Email Content",                  // Content (required)
@@ -107,9 +131,7 @@ $config = [
   "bcc"       => ["bcc@example.com"],             // BCC (optional)
   "priority"  => "high",                          // Priority: high/normal/low (optional)
   "isHtml"    => true                             // HTML format (optional, default false)
-];
-
-$result = $mailer->send($config);
+]);
 ```
 
 **Multiple Recipients**
@@ -125,7 +147,7 @@ $config = [
   "body"    => "This is a group notification email"
 ];
 
-$result = $mailer->send($config);
+$result = Mailer::send($config);
 ```
 
 **CC and BCC**
@@ -145,17 +167,17 @@ $config = [
   "body"    => "Email content"
 ];
 
-$result = $mailer->send($config);
+$result = Mailer::send($config);
 ```
 
 ### Bulk Sending
 
-**sendBulk($recipients, $subject, $body, $options)** - Bulk send emails
+**Mailer::sendBulk($recipients, $subject, $body, $options)** - Bulk email sending (static call)
 
-> Note: Bulk sending automatically adds a random interval of 1-3 seconds between each email to avoid triggering rate limits from email service providers like Gmail and iCloud.
+> Note: Bulk sending automatically adds a random interval of 1-3 seconds between each email to avoid triggering rate limits from email providers like Gmail and iCloud.
 
 ```php
-$results = $mailer->sendBulk(
+$results = Mailer::sendBulk(
   [
     "user1@example.com" => "User One",
     "user2@example.com" => "User Two",
@@ -186,7 +208,7 @@ foreach ($results as $email => $success) {
 try {
   $mailer = new Mailer();
   
-  $result = $mailer->send([
+  $result = Mailer::send([
     "email"   => "test@example.com",
     "subject" => "Test Email",
     "body"    => "Test content"
@@ -204,7 +226,7 @@ try {
   if (strpos($e->getMessage(), "SMTP connect() failed") !== false) {
     echo "SMTP connection failed, please check server settings";
   } elseif (strpos($e->getMessage(), "Authentication") !== false) {
-    echo "SMTP authentication failed, please check credentials";
+    echo "SMTP authentication failed, please check username and password";
   } else {
     echo "Email sending exception: " . $e->getMessage();
   }
@@ -219,7 +241,7 @@ try {
   $mailer = new Mailer();
   
   // Send test email
-  $result = $mailer->send([
+  $result = Mailer::send([
       "email"   => "test@example.com",
       "subject" => "SMTP Connection Test",
       "body"    => "If you receive this email, SMTP configuration is correct."
@@ -235,7 +257,7 @@ try {
 ### Bulk Sending Monitoring
 
 ```php
-$results = $mailer->sendBulk([
+$results = Mailer::sendBulk([
     "user1@example.com" => "User One",
     "user2@example.com" => "User Two",
     "user3@example.com" => "User Three"
@@ -250,13 +272,13 @@ echo "Bulk sending completed - Success: {$successCount}, Failed: {$failureCount}
 
 ## License
 
-This project is licensed under the [MIT](LICENSE) License.
+This source code project is licensed under [MIT](LICENSE).
 
 ## Author
 
 <img src="https://avatars.githubusercontent.com/u/25631760" align="left" width="96" height="96" style="margin-right: 0.5rem;">
 
-<h4 style="padding-top: 0">Pardn Chiu</h4>
+<h4 style="padding-top: 0">邱敬幃 Pardn Chiu</h4>
 
 <a href="mailto:dev@pardn.io" target="_blank">
     <img src="https://pardn.io/image/email.svg" width="48" height="48">
@@ -266,4 +288,4 @@ This project is licensed under the [MIT](LICENSE) License.
 
 ***
 
-©️ 2024 [Pardn Chiu](https://pardn.io)
+©️ 2025 [邱敬幃 Pardn Chiu](https://pardn.io)
