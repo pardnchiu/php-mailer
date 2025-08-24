@@ -1,0 +1,65 @@
+{
+  "name": "pardnchiu/mailer",
+  "description": "Lightweight PHP mailer client supporting SMTP sending, automatic configuration management, and complete email functionality. Built on PHPMailer, providing stable and reliable email sending experience.",
+  "type": "library",
+  "keywords": [
+    "mailer",
+    "email",
+    "smtp",
+    "php",
+    "pardnchiu",
+    "邱敬幃"
+  ],
+  "homepage": "https://pardn.io",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "邱敬幃 Pardn Chiu",
+      "email": "dev@pardn.io",
+      "homepage": "https://pardn.io",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "dev@pardn.io",
+    "issues": "https://github.com/pardnchiu/php-mailer/issues",
+    "source": "https://github.com/pardnchiu/php-mailer",
+    "docs": "https://github.com/pardnchiu/php-mailer/blob/main/README.md"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.0",
+    "phpmailer/phpmailer": "^6.9"
+  },
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "pardnchiu\\": "src/"
+    },
+    "exclude-from-classmap": [
+      ".gitignore",
+      "*.md",
+      "composer.json"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {}
+  },
+  "scripts": {},
+  "extra": {
+    "branch-alias": {}
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "preferred-install": "dist"
+  },
+  "archive": {
+    "exclude": [
+      "/.git",
+      "/*.md",
+      "/.gitignore"
+    ]
+  }
+}
